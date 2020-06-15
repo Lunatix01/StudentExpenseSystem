@@ -171,11 +171,12 @@ public class MainClass {
 			  
 		  }
 			  }
+			  
 			  }
 		  
 		  cc.close();
 		  br.close();
-		scan.nextLine();
+		
 		int chosen = scan.nextInt();
 		scan.nextLine();
 		if(chosen==1) {
@@ -207,9 +208,9 @@ public class MainClass {
 				check1.write(uname);
 			    check1.close();
 			}
+			 hasSignedIn(uname);
 		}
 		else if (chosen==6) {
-			mainPage();
 			main(null);
 		}
 		
@@ -238,11 +239,12 @@ public class MainClass {
 			
 	    	
 		}
-
+	   
 	    }
     	catch(Exception e) {
     		System.out.println("there might be no item for this user");
     	}
+    	
 }
     
 	private static void viewMyBill(String uname) throws IOException {
@@ -256,7 +258,8 @@ public class MainClass {
 			  while (( st = br.readLine()) != null) {
 				  System.out.println(st);
 			  }br.close();
-		}	
+		}
+    	hasSignedIn(uname);
 }
 	private static void removeItem(String uname) throws IOException {
 	
@@ -294,6 +297,7 @@ public class MainClass {
     writer.close();
     inputFile.delete();
     tempFile.renameTo(inputFile); 
+    hasSignedIn(uname);
 }
 	public static void addItem(String uname) throws IOException {
     	  System.out.print("Enter name of your Item: ");
@@ -334,7 +338,7 @@ public class MainClass {
 			checkout();
 		}
 		else {
-			System.out.println("please first create accounts then you can View Checkout");
+			System.out.println("please first create an account then you can View Checkout");
 		}
 		}
 		else if(someone==4) {
