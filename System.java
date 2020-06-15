@@ -208,6 +208,10 @@ public class MainClass {
 			    check1.close();
 			}
 		}
+		else if (chosen==6) {
+			mainPage();
+			main(null);
+		}
 		
   }
     private static void viewAllBills() throws IOException {
