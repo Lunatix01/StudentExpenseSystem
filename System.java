@@ -7,9 +7,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.security.MessageDigest; 
 import java.security.NoSuchAlgorithmException; 
 public class MainClass {
@@ -23,17 +25,15 @@ public class MainClass {
 		System.out.println("*****************************************************");
 		System.out.println("**                   [1] Sign Up                   **");
 		System.out.println("**                   [2] Sign In                   **");
-		System.out.println("**                   [3] Checkout                  **");
+		System.out.println("**                   [3] View Checkout             **");
 		System.out.println("**                   [4] Exit                      **");
 		System.out.println("*****************************************************");
-		
 		
   }
   public static void signUp() throws IOException {
 	    System.out.println("*******************Sign Up Page**********************");
 	    System.out.print("Enter New Username: ");
 	    String username = scan.next();
-	    Path filePath = Paths.get("usernames.txt");
 	    File us1 = new File("usernames.txt");
 	    if(us1.exists()) {
     	System.out.println("+++++++++++++++++++++");
@@ -45,7 +45,7 @@ public class MainClass {
 					  signUp();
 				  }
 			  }
-	    }
+	    br.close();}
 	    System.out.print("Enter New Password: ");
 	    String password = scan.next();
 	    if(!(username.equals("")) || !(password.equals("")) ) {
@@ -116,8 +116,8 @@ public class MainClass {
 		   else {
 			   System.out.println("your username or password is Wrong, Please Enter a Valid uname/pwd");
 			   signIn();
-		   }
-		  
+		   } 
+		  br.close();
 	  }
 	  else {
 		  System.out.println("your username or password is Wrong, Please Enter a Valid uname/pwd");
@@ -134,7 +134,7 @@ public class MainClass {
 		System.out.println("**                   [2] Delete Item               **");
 		System.out.println("**                   [3] View My Bill              **");
 		System.out.println("**                   [4] View All Bills            **");
-		System.out.println("**                   [5] View Checkout             **");
+		System.out.println("**                   [5] Checkout                  **");
 		System.out.println("**                   [6] Return                    **");
 		System.out.println("*****************************************************");
 		File checker = new File("checks.txt");
@@ -157,22 +157,26 @@ public class MainClass {
 				  File agreement= new File(uname+"\\agreement.txt");
 				  agreement.createNewFile();
 				  int agree = scan.nextInt();
-				  
+				  FileWriter agrees = new FileWriter(agreement);
 				  if(agree==1) {
-					  FileWriter agrees = new FileWriter(agreement);
+					  
 					  agrees.write("true");
-					  agrees.close();
+					  
 				  }
 				  else if(agree==2) {
-					  FileWriter agrees = new FileWriter(agreement);
+					  
 					  agrees.write("false");
-					  agrees.close();
+					  
 				  }
-			  }
+			agrees.close(); 
+			}
 			  
 		  }
 			  }
 			  }
+		  
+		  cc.close();
+		  br.close();
 		scan.nextLine();
 		int chosen = scan.nextInt();
 		scan.nextLine();
@@ -223,18 +227,22 @@ public class MainClass {
 			    String st; 
 			    while (( st = br.readLine()) != null) {
 				  System.out.println(st);
-				  
+				 
 			  }
-			    System.out.println("--------------------");
+			    System.out.println("--------------------"); 
+			    br.close();
 			}
 			System.out.println("+++++++++++++++++++++");
 			
 	    	
-		}}
+		}
+
+	    }
     	catch(Exception e) {
     		System.out.println("there might be no item for this user");
     	}
 }
+    
 	private static void viewMyBill(String uname) throws IOException {
     	Path filePath = Paths.get(uname+"\\allitemNames.txt");
     	List<String> names = Files.readAllLines(filePath, Charset.forName("UTF-8"));
@@ -245,7 +253,7 @@ public class MainClass {
 			  String st; 
 			  while (( st = br.readLine()) != null) {
 				  System.out.println(st);
-			  }
+			  }br.close();
 		}	
 }
 	private static void removeItem(String uname) throws IOException {
@@ -278,6 +286,7 @@ public class MainClass {
 	    String trimmedLine = currentLine.trim();
 	    if(trimmedLine.equals(lineToRemove)) continue;
 	    writer.write(currentLine + System.getProperty("line.separator"));
+	    
 	}
 	reader.close();
     writer.close();
@@ -318,13 +327,18 @@ public class MainClass {
 			signIn();
 		}
 		else if(someone==3) {
+			File condition = new File("usernames.txt");
+		if(condition.exists()) {
 			checkout();
+		}
+		else {
+			System.out.println("please first create accounts then you can View Checkout");
+		}
 		}
 		else if(someone==4) {
 			System.exit(0);
 		}
-		Path filePath = Paths.get("usernames.txt");
-    	List<String> names = Files.readAllLines(filePath, Charset.forName("UTF-8"));
+		
     	
 	}
 	private static void checkout() throws IOException {
@@ -338,9 +352,12 @@ public class MainClass {
     	for (int i = 0; i < users.size(); i++) {
     		countUsers=users.size();
     		Path filePath1 = Paths.get(users.get(i)+"\\allitemNames.txt");
+    		File checkExist=  new File(users.get(i)+"\\allitemNames.txt");
+    		if(checkExist.exists()) {
     		List<String> items = Files.readAllLines(filePath1, Charset.forName("UTF-8"));
     		for (int j = 0; j < items.size(); j++) {
     			File itemz = new File(users.get(i)+"\\items\\"+items.get(j));
+    			if(itemz.exists()) {
 				BufferedReader br = new BufferedReader(new FileReader(itemz));
 			    String st; 
 			    br.readLine();br.readLine();br.readLine();br.readLine();
@@ -348,8 +365,8 @@ public class MainClass {
 			    	
 			    	tempo=tempo+Integer.parseInt(st);
 			    }
-			    
-			}
+			br.close();}
+    			}}
     		map.put(users.get(i), tempo);
     		tempo=0;
 			}
@@ -380,20 +397,39 @@ public class MainClass {
 					  agreeMENT=false;
 				  }
 			  }
-	}}
-    	if(agreeMENT==true) {
+	br.close();}
+			}
+    	checkout2();
+		
+	}
+	private static void checkout2() throws IOException {
+		if(agreeMENT==true) {
+			Path filePath = Paths.get("usernames.txt");
+	    	List<String> users = Files.readAllLines(filePath, Charset.forName("UTF-8"));
     		for (int i = 0; i < users.size(); i++) {
     			Path filePath1 = Paths.get(users.get(i)+"\\allitemNames.txt");
         		List<String> items = Files.readAllLines(filePath1, Charset.forName("UTF-8"));
 				for (int j = 0; j < items.size(); j++) {
-					File x = new File(users.get(i)+"\\items\\"+items.get(j));
-					x.setWritable(true);
-					x.delete();
+					items.get(j).trim();
+					File lol = new File(users.get(i)+"\\items\\"+items.get(j));
+					lol.delete();
 				}
-				
-			
+			}
+    		Path filePath1 = Paths.get("usernames.txt");
+	    	List<String> users1 = Files.readAllLines(filePath1, Charset.forName("UTF-8"));
+    		for (int i = 0; i < users1.size(); i++) {
+    			File agreementCheck = new File(users.get(i)+"\\agreement.txt");
+    			File allItemNames = new File(users.get(i)+"\\allitemNames.txt");
+    			if(agreementCheck.exists()) {agreementCheck.delete();}
+    			if(allItemNames.exists()) {allItemNames.delete();}
 			}
     	}
+		File whoCheckedOut = new File("checks.txt");
+		File doesAnybodyCheckedOut = new File("checkout.txt");
+		if(whoCheckedOut.exists()) {
+		whoCheckedOut.delete();}
+		if(doesAnybodyCheckedOut.exists()) {
+		doesAnybodyCheckedOut.delete();}
 		
 	}
 
