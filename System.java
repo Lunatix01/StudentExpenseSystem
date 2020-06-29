@@ -15,6 +15,7 @@ import java.security.NoSuchAlgorithmException;
 public class MainClass {
  public static Scanner scan= new Scanner(System.in);
  public static boolean agreeMENT = false;
+ public static boolean checksForFalse=true;
   public static void mainPage () {
 	    
 		System.out.println("*****************************************************");
@@ -148,14 +149,30 @@ public class MainClass {
 			  if(st2!=null) {
 			  if(st.equals("true")){
 			  if(!(uname.equals(st2))) {
+				  File agreement= new File(uname+"\\agreement.txt");
+				  agreement.createNewFile();
+				  
+				  FileWriter agrees = new FileWriter(agreement);
+				  Path filePath = Paths.get("usernames.txt");	
+			     List<String> users = Files.readAllLines(filePath, Charset.forName("UTF-8"));
+				  for (int i = 0; i < users.size(); i++) {
+					  File agreementagain= new File(users.get(i)+"\\agreement.txt");
+					  BufferedReader check = new BufferedReader(new FileReader(agreementagain));
+					  String temp1;
+					  while (( st = check.readLine()) != null ) {
+						  if(st.equals("false"));{
+							  checksForFalse=false;
+						  }
+						  
+					  }
+					  
+				}
+				  if(checksForFalse!=false) {
+					int agree = scan.nextInt();
 				  System.out.println("IMPORTANT MESSAGE: "+st2+" wants to checkout");
 				  System.out.println("Do you agree ?");
 				  System.out.println("[1] Yes");
 				  System.out.println("[2] No");
-				  File agreement= new File(uname+"\\agreement.txt");
-				  agreement.createNewFile();
-				  int agree = scan.nextInt();
-				  FileWriter agrees = new FileWriter(agreement);
 				  if(agree==1) {
 					  
 					  agrees.write("true");
@@ -167,7 +184,7 @@ public class MainClass {
 					  
 				  }
 			agrees.close(); 
-			}
+			}}
 			  
 		  }
 			  }
@@ -218,6 +235,9 @@ public class MainClass {
     private static void viewAllBills() throws IOException {
     	try {
     	Path filePath = Paths.get("usernames.txt");
+    	Map<String, Integer> map = new HashMap<String, Integer>();
+    	int spent = 0;
+    	int tempo=0;
     	System.out.println("+++++++++++++++++++++");
     	List<String> users = Files.readAllLines(filePath, Charset.forName("UTF-8"));
 	    for (int i = 0; i < users.size(); i++) {
@@ -235,10 +255,30 @@ public class MainClass {
 			    System.out.println("--------------------"); 
 			    br.close();
 			}
+			Path filePath1 = Paths.get(users.get(i)+"\\allitemNames.txt");
+    		File checkExist=  new File(users.get(i)+"\\allitemNames.txt");
+    		if(checkExist.exists()) {
+    		List<String> items = Files.readAllLines(filePath1, Charset.forName("UTF-8"));
+    		for (int j = 0; j < items.size(); j++) {
+    			File itemz = new File(users.get(i)+"\\items\\"+items.get(j));
+    			if(itemz.exists()) {
+				BufferedReader br = new BufferedReader(new FileReader(itemz));
+			    String st; 
+			    br.readLine();br.readLine();br.readLine();br.readLine();
+			    while (( st = br.readLine()) != null) {
+			    	
+			    	tempo=tempo+Integer.parseInt(st);
+			    }
+			br.close();}
+    			}}
+    		map.put(users.get(i), tempo);
+    		tempo=0;for (int j = 0; j < map.size(); j++) {
+				spent=spent+map.get(users.get(j));
+				System.out.println(users.get(j)+" spent: "+spent);
+			}
+			}
 			System.out.println("+++++++++++++++++++++");
-			
-	    	
-		}
+	    
 	   
 	    }
     	catch(Exception e) {
