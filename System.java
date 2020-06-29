@@ -141,7 +141,7 @@ public class MainClass {
 		checker.createNewFile();
 		checkUname.createNewFile();
 		BufferedReader cc = new BufferedReader(new FileReader(checkUname));
-		 BufferedReader br = new BufferedReader(new FileReader(checker));
+		BufferedReader br = new BufferedReader(new FileReader(checker));
 		  String st; 
 		  String st2;
 		  while (( st = br.readLine()) != null ) {
@@ -150,8 +150,8 @@ public class MainClass {
 			  if(st.equals("true")){
 			  if(!(uname.equals(st2))) {
 				  File agreement= new File(uname+"\\agreement.txt");
-				  agreement.createNewFile();
-				  
+				  if(!agreement.exists()) {
+				  agreement.createNewFile();}
 				  FileWriter agrees = new FileWriter(agreement);
 				  Path filePath = Paths.get("usernames.txt");	
 			     List<String> users = Files.readAllLines(filePath, Charset.forName("UTF-8"));
@@ -159,40 +159,41 @@ public class MainClass {
 					  File agreementagain= new File(users.get(i)+"\\agreement.txt");
 					  BufferedReader check = new BufferedReader(new FileReader(agreementagain));
 					  String temp1;
-					  while (( st = check.readLine()) != null ) {
-						  if(st.equals("false"));{
+					  while (( temp1 = check.readLine()) != null ) {
+						  if(temp1.equals("false"));{
+							  
 							  checksForFalse=false;
 						  }
 						  
-					  }
+					  }check.close();
 					  
 				}
-				  if(checksForFalse!=false) {
-					int agree = scan.nextInt();
+				  if(checksForFalse=true) {
 				  System.out.println("IMPORTANT MESSAGE: "+st2+" wants to checkout");
 				  System.out.println("Do you agree ?");
 				  System.out.println("[1] Yes");
 				  System.out.println("[2] No");
+				  int agree = scan.nextInt();
 				  if(agree==1) {
-					  
+					
 					  agrees.write("true");
-					  
+					  agrees.close(); 
 				  }
 				  else if(agree==2) {
 					  
 					  agrees.write("false");
-					  
+					  agrees.close(); 
 				  }
-			agrees.close(); 
+			
 			}}
 			  
 		  }
 			  }
-			  
+			
 			  }
-		  
 		  cc.close();
 		  br.close();
+		  
 		
 		int chosen = scan.nextInt();
 		scan.nextLine();
@@ -243,6 +244,8 @@ public class MainClass {
 	    for (int i = 0; i < users.size(); i++) {
 			System.out.println("User: "+users.get(i));
 			Path pathfile = Paths.get(users.get(i)+"\\allitemNames.txt");
+			File checkIfExist=new File(users.get(i)+"\\allitemNames.txt");
+			if(checkIfExist.exists()) {
 			List<String> allItemNames = Files.readAllLines(pathfile, Charset.forName("UTF-8"));
 			for (int j = 0; j < allItemNames.size(); j++) {
 				File items = new File(users.get(i)+"\\items\\"+allItemNames.get(j));
@@ -250,7 +253,6 @@ public class MainClass {
 			    String st; 
 			    while (( st = br.readLine()) != null) {
 				  System.out.println(st);
-				 
 			  }
 			    System.out.println("--------------------"); 
 			    br.close();
@@ -266,23 +268,26 @@ public class MainClass {
 			    String st; 
 			    br.readLine();br.readLine();br.readLine();br.readLine();
 			    while (( st = br.readLine()) != null) {
-			    	
 			    	tempo=tempo+Integer.parseInt(st);
+			    	map.put(users.get(i), tempo);
+			    	
 			    }
-			br.close();}
-    			}}
-    		map.put(users.get(i), tempo);
-    		tempo=0;for (int j = 0; j < map.size(); j++) {
-				spent=spent+map.get(users.get(j));
-				System.out.println(users.get(j)+" spent: "+spent);
+			br.close();
 			}
+    			}
+    		tempo=0;}
+    		}
+			
+    		System.out.println("*******************");
 			}
-			System.out.println("+++++++++++++++++++++");
-	    
-	   
+			for (int j = 0; j < map.size(); j++) {
+				System.out.println(users.get(j)+" spent: "+map.get(users.get(j)));
+				System.out.println("+++++++++++++++++++++");
+			}
+    		
 	    }
     	catch(Exception e) {
-    		System.out.println("there might be no item for this user");
+    		System.out.println("there might be no item for a user");
     	}
     	
 }
@@ -297,8 +302,8 @@ public class MainClass {
 			  String st; 
 			  while (( st = br.readLine()) != null) {
 				  System.out.println(st);
-			  }br.close();
-		}
+			  }
+		br.close();}
     	hasSignedIn(uname);
 }
 	private static void removeItem(String uname) throws IOException {
@@ -454,28 +459,35 @@ public class MainClass {
 	    	List<String> users = Files.readAllLines(filePath, Charset.forName("UTF-8"));
     		for (int i = 0; i < users.size(); i++) {
     			Path filePath1 = Paths.get(users.get(i)+"\\allitemNames.txt");
+    			File chek = new File(users.get(i)+"\\allitemNames.txt");
+    			if(chek.exists()) {
         		List<String> items = Files.readAllLines(filePath1, Charset.forName("UTF-8"));
 				for (int j = 0; j < items.size(); j++) {
 					items.get(j).trim();
 					File lol = new File(users.get(i)+"\\items\\"+items.get(j));
 					lol.delete();
 				}
-			}
+			}}
     		Path filePath1 = Paths.get("usernames.txt");
 	    	List<String> users1 = Files.readAllLines(filePath1, Charset.forName("UTF-8"));
     		for (int i = 0; i < users1.size(); i++) {
     			File agreementCheck = new File(users.get(i)+"\\agreement.txt");
     			File allItemNames = new File(users.get(i)+"\\allitemNames.txt");
-    			if(agreementCheck.exists()) {agreementCheck.delete();}
-    			if(allItemNames.exists()) {allItemNames.delete();}
+    			
+    			if(agreementCheck.exists()) {
+    				agreementCheck.delete();}
+    			if(allItemNames.exists()) {
+    				allItemNames.delete();}
 			}
-    	}
-		File whoCheckedOut = new File("checks.txt");
+  
+    	File whoCheckedOut = new File("checks.txt");
 		File doesAnybodyCheckedOut = new File("checkout.txt");
-		if(whoCheckedOut.exists()) {
+		if(whoCheckedOut.exists()) {System.out.println("XD2");
 		whoCheckedOut.delete();}
 		if(doesAnybodyCheckedOut.exists()) {
 		doesAnybodyCheckedOut.delete();}
+    	}
+		
 		
 	}
 
